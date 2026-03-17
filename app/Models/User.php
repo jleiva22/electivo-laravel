@@ -19,9 +19,9 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
-        'name',
         'email',
         'password',
+        'rol',
     ];
 
     /**
@@ -46,4 +46,7 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
-}
+    public function alumno()
+    {
+        return $this->hasOne(Alumno::class);
+    }}
