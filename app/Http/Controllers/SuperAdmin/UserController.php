@@ -12,10 +12,14 @@ class UserController extends Controller
 {
     public function index(Request $request)
     {
-        $query = User::query();
+        $query = User::with('alumno');
 
         if ($userId = $request->query('user_id')) {
             $query->where('id', $userId);
+        }
+
+        if ($rol = $request->query('rol')) {
+            $query->where('rol', $rol);
         }
 
         if ($search = $request->query('q')) {
@@ -38,6 +42,9 @@ class UserController extends Controller
             'email' => ['required', 'email', 'max:255', 'unique:users,email'],
             'rol' => ['required', 'in:superadmin,admin,alumno'],
             'password' => ['nullable', 'string', 'min:6'],
+            'rut' => ['nullable', 'string', 'max:12'],
+            'curso' => ['nullable', 'string', 'max:255'],
+            'nivel_actual' => ['nullable', 'in:3,4'],
         ]);
 
         $user = User::create([
@@ -49,16 +56,17 @@ class UserController extends Controller
         ]);
 
         if ($user->rol === 'alumno') {
-            Alumno::firstOrCreate([
+            Alumno::create([
                 'user_id' => $user->id,
-            ], [
-                'rut' => '',
-                'nombre_completo' => $user->name,
-                'nivel_actual' => '3',
+                'rut' => $data['rut'] ?? '',
+                'nombre' => $data['name'],
+                'apellido' => $data['apellido'],
+                'curso' => $data['curso'] ?? null,
+                'nivel_actual' => $data['nivel_actual'] ?? '3',
             ]);
         }
 
-        return response()->json($user, 201);
+        return response()->json($user->load('alumno'), 201);
     }
 
     public function update(Request $request, User $user)
@@ -69,6 +77,9 @@ class UserController extends Controller
             'email' => ['required', 'email', 'max:255', "unique:users,email,{$user->id}"],
             'rol' => ['required', 'in:superadmin,admin,alumno'],
             'password' => ['nullable', 'string', 'min:6'],
+            'rut' => ['nullable', 'string', 'max:12'],
+            'curso' => ['nullable', 'string', 'max:255'],
+            'nivel_actual' => ['nullable', 'in:3,4'],
         ]);
 
         $user->name = $data['name'];
@@ -82,7 +93,20 @@ class UserController extends Controller
 
         $user->save();
 
-        return response()->json($user);
+        if ($user->rol === 'alumno') {
+            Alumno::updateOrCreate(
+                ['user_id' => $user->id],
+                [
+                    'rut' => $data['rut'] ?? '',
+                    'nombre' => $data['name'],
+                    'apellido' => $data['apellido'],
+                    'curso' => $data['curso'] ?? null,
+                    'nivel_actual' => $data['nivel_actual'] ?? '3',
+                ]
+            );
+        }
+
+        return response()->json($user->load('alumno'));
     }
 
     public function destroy(User $user)

@@ -25,6 +25,14 @@ Route::get('/admin', function () {
     return view('admin');
 });
 
+Route::get('/admin/catalogo', function () {
+    return view('admin-catalogo');
+});
+
+Route::get('/admin/postulaciones/{id}/resultados', function ($id) {
+    return view('admin-resultados', compact('id'));
+});
+
 // Superadministración (dashboard)
 Route::get('/superadmin', [\App\Http\Controllers\SuperAdmin\DashboardController::class, 'index']);
 Route::post('/superadmin/import', [\App\Http\Controllers\SuperAdmin\UserImportController::class, 'import']);
@@ -40,7 +48,13 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::post('postulaciones', [\App\Http\Controllers\Admin\PostulacionController::class, 'store']);
     Route::put('postulaciones/{postulacion}', [\App\Http\Controllers\Admin\PostulacionController::class, 'update']);
     Route::post('postulaciones/{postulacion}/close', [\App\Http\Controllers\Admin\PostulacionController::class, 'close']);
+    Route::get('postulaciones/{postulacion}/resultados', [\App\Http\Controllers\Admin\PostulacionController::class, 'resultados']);
     Route::get('areas', [\App\Http\Controllers\Admin\PostulacionController::class, 'getAreas']);
+
+    // Nuevos CRUDs
+    Route::apiResource('areas-crud', \App\Http\Controllers\Admin\AreaController::class)->parameters(['areas-crud' => 'area']);
+    Route::apiResource('sectores', \App\Http\Controllers\Admin\SectorController::class)->parameters(['sectores' => 'sector']);
+    Route::apiResource('electivos', \App\Http\Controllers\Admin\ElectivoController::class)->parameters(['electivos' => 'electivo']);
 });
 
 // API/Controladores alumno

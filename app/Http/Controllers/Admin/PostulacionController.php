@@ -92,4 +92,16 @@ class PostulacionController extends Controller
     {
         return response()->json(['data' => Area::all()]);
     }
+
+    public function resultados(Postulacion $postulacion)
+    {
+        $resultados = \App\Models\PostulacionAlumno::with([
+            'alumno.user',
+            'selecciones.electivo.sector.area'
+        ])
+        ->where('postulacion_id', $postulacion->id)
+        ->get();
+
+        return response()->json(['data' => $resultados]);
+    }
 }

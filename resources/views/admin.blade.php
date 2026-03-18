@@ -4,11 +4,17 @@
 
 @section('content')
     <div class="flex flex-col gap-6">
-        <header>
-            <h1 class="text-2xl font-semibold">Administración de Postulaciones</h1>
-            <p class="mt-1 text-sm text-slate-700 dark:text-slate-300">
-                Gestiona procesos y revisa postulaciones.
-            </p>
+        <header class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div>
+                <h1 class="text-2xl font-semibold">Administración de Postulaciones</h1>
+                <p class="mt-1 text-sm text-slate-700 dark:text-slate-300">
+                    Gestiona procesos y revisa postulaciones.
+                </p>
+            </div>
+            <nav class="flex items-center gap-2">
+                <a href="/admin" class="rounded-lg bg-slate-200 dark:bg-slate-800 px-4 py-2 text-sm font-semibold text-slate-800 dark:text-slate-100">Procesos</a>
+                <a href="/admin/catalogo" class="rounded-lg bg-transparent hover:bg-slate-100 dark:hover:bg-slate-800 px-4 py-2 text-sm font-semibold text-slate-600 dark:text-slate-400">Catálogo Académico</a>
+            </nav>
         </header>
 
         <section class="grid gap-6 lg:grid-cols-[1fr_320px]">
@@ -95,13 +101,23 @@
                                             <span class="text-slate-500 dark:text-slate-400">Máx total: <span class="font-semibold">${p.max_total_electivos}</span></span>
                                         </div>
                                     </div>
-                                    <button
-                                        class="rounded-lg bg-[#AD1133] px-4 py-2 text-sm font-semibold text-white hover:bg-[#8E0E2A]"
-                                        onclick="closeProcess(${p.id})"
-                                    >
-                                        Cerrar
-                                    </button>
-                                </div>
+                                        <div class="flex items-center gap-2">
+                                        ${p.estado === 'activa' ? `
+                                            <button
+                                                class="rounded-lg bg-[#AD1133] px-4 py-2 text-sm font-semibold text-white hover:bg-[#8E0E2A]"
+                                                onclick="closeProcess(${p.id})"
+                                            >
+                                                Cerrar
+                                            </button>
+                                        ` : ''}
+                                            <a
+                                                href="/admin/postulaciones/${p.id}/resultados"
+                                                class="rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 py-2 text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800"
+                                            >
+                                                Ver Resultados
+                                            </a>
+                                        </div>
+                                    </div>
 
                                 <div class="mt-4">
                                     <h4 class="text-sm font-semibold text-slate-800 dark:text-slate-100">Reglas por área</h4>
