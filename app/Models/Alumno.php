@@ -12,7 +12,9 @@ class Alumno extends Model
     protected $fillable = [
         'user_id',
         'rut',
-        'nombre_completo',
+        'nombre',
+        'apellido',
+        'curso',
         'nivel_actual',
     ];
 

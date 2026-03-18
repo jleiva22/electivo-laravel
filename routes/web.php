@@ -25,6 +25,14 @@ Route::get('/admin', function () {
     return view('admin');
 });
 
+// Superadministración (dashboard)
+Route::get('/superadmin', [\App\Http\Controllers\SuperAdmin\DashboardController::class, 'index']);
+Route::post('/superadmin/import', [\App\Http\Controllers\SuperAdmin\UserImportController::class, 'import']);
+Route::get('/superadmin/users', [\App\Http\Controllers\SuperAdmin\UserController::class, 'index']);
+Route::post('/superadmin/users', [\App\Http\Controllers\SuperAdmin\UserController::class, 'store']);
+Route::patch('/superadmin/users/{user}', [\App\Http\Controllers\SuperAdmin\UserController::class, 'update']);
+Route::delete('/superadmin/users/{user}', [\App\Http\Controllers\SuperAdmin\UserController::class, 'destroy']);
+
 // API/Controladores de administración
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('postulaciones', [\App\Http\Controllers\Admin\PostulacionController::class, 'index']);
